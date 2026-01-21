@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.example.restaurantsystem.repository.jpa")
-@EnableMongoRepositories(basePackages = "com.example.restaurantsystem.repository.mongo")
+@EnableMongoRepositories(basePackages = "com.example.restaurantsystem.repository")
 @EnableCaching
 
 public class RestaurantSystemApplication {
