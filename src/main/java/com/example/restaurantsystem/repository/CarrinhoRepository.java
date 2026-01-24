@@ -1,38 +1,26 @@
 package com.example.restaurantsystem.repository;
 
 import com.example.restaurantsystem.model.Carrinho;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.Duration;
+import java.util.Optional;
 
 @Repository
-public class CarrinhoRepository {
+public interface CarrinhoRepository extends MongoRepository<Carrinho, String> {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    // Para não quebrar o seu Service, criamos esses métodos "fake"
+    // que apenas redirecionam para os comandos do MongoDB
 
-    // O Spring injeta o template do Redis automaticamente
-    public CarrinhoRepository(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    default void salvar(Carrinho carrinho) {
+        save(carrinho);
     }
 
-    private static final String KEY_PREFIX = "carrinho:";
-
-    // Salvar (Com expiração de 24 horas, por exemplo)
-    public void salvar(Carrinho carrinho) {
-        String key = KEY_PREFIX + carrinho.getId();
-        redisTemplate.opsForValue().set(key, carrinho, Duration.ofHours(24));
+    default Carrinho buscar(String id) {
+        return findById(id).orElse(null);
     }
 
-    // Buscar
-    public Carrinho buscar(String id) {
-        String key = KEY_PREFIX + id;
-        return (Carrinho) redisTemplate.opsForValue().get(key);
-    }
-
-    // Deletar
-    public void deletar(String id) {
-        String key = KEY_PREFIX + id;
-        redisTemplate.delete(key);
+    default void deletar(String id) {
+        deleteById(id);
     }
 }

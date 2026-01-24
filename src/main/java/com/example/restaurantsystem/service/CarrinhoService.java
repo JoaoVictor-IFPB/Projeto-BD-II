@@ -19,30 +19,36 @@ public class CarrinhoService {
     private ItemCardapioRepository itemRepository;
 
     public Carrinho adicionarItem(String usuarioId, Long itemId) {
+        // 1. Busca o prato no Postgres (NeonDB)
         ItemCardapio item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item não encontrado"));
 
-        Carrinho carrinho = carrinhoRepository.buscar(usuarioId);
-        if (carrinho == null) {
-            carrinho = new Carrinho();
-            carrinho.setId(usuarioId);
-            carrinho.setListaItens(new ArrayList<>());
-            carrinho.setValorTotal(0.0);
-        }
+        // 2. Busca o carrinho no MongoDB (ou cria um novo se não existir)
+        Carrinho carrinho = carrinhoRepository.findById(usuarioId)
+                .orElseGet(() -> {
+                    Carrinho novo = new Carrinho();
+                    novo.setId(usuarioId);
+                    return novo;
+                });
 
+        // 3. Usa a sua função PL/pgSQL para calcular o preço com a taxa
+        Double precoComTaxa = itemRepository.obterPrecoComEntregaFixa(item.getPreco());
+
+        // 4. Atualiza a lista e o valor total
         carrinho.getListaItens().add(item);
-        carrinho.setValorTotal(carrinho.getValorTotal() + item.getPreco());
+        carrinho.setValorTotal(carrinho.getValorTotal() + precoComTaxa);
 
-        carrinhoRepository.salvar(carrinho);
-
-        return carrinho;
+        // 5. Salva no MongoDB de forma definitiva
+        return carrinhoRepository.save(carrinho);
     }
 
     public Carrinho buscarCarrinho(String usuarioId) {
-        return carrinhoRepository.buscar(usuarioId);
+        // Busca direta no MongoDB
+        return carrinhoRepository.findById(usuarioId).orElse(null);
     }
 
     public void limparCarrinho(String usuarioId) {
-        carrinhoRepository.deletar(usuarioId);
+        // Remove do MongoDB
+        carrinhoRepository.deleteById(usuarioId);
     }
 }
