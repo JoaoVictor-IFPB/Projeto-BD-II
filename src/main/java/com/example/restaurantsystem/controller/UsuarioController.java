@@ -3,6 +3,7 @@ package com.example.restaurantsystem.controller;
 import com.example.restaurantsystem.model.Usuario;
 import com.example.restaurantsystem.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,18 @@ public class UsuarioController {
     @PostMapping
     public Usuario salvar(@RequestBody Usuario usuario) {
         return usuarioService.salvar(usuario);
+    }
+
+    @PostMapping("/com-localizacao")
+    public ResponseEntity<Usuario> salvarComLocalizacao(
+            @RequestBody Usuario usuario,
+            @RequestParam double lat,
+            @RequestParam double lon) {
+
+        // Chamando o método que criamos no Service no passo anterior
+        Usuario salvo = usuarioService.salvarComLocalizacao(usuario, lat, lon);
+
+        return ResponseEntity.ok(salvo);
     }
 
 }
