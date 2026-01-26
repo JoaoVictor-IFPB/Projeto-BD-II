@@ -18,7 +18,6 @@ public class Usuario {
 
     private String nome;
     private String email;
-    // Removi senha, telefone e endereco pois não existem na tabela do banco
 
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore

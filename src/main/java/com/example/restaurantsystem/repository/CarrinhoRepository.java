@@ -9,8 +9,6 @@ import java.util.Optional;
 @Repository
 public interface CarrinhoRepository extends MongoRepository<Carrinho, String> {
 
-    // Para não quebrar o seu Service, criamos esses métodos "fake"
-    // que apenas redirecionam para os comandos do MongoDB
 
     default void salvar(Carrinho carrinho) {
         save(carrinho);

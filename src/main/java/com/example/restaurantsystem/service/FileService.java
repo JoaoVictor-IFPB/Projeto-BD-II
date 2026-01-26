@@ -18,7 +18,7 @@ public class FileService {
 
         minioClient.putObject(
                 PutObjectArgs.builder()
-                        .bucket("restaurante") // Nome do bucket (deve ser criado no MinIO)
+                        .bucket("restaurante")
                         .object(fileName)
                         .stream(file.getInputStream(), file.getSize(), -1)
                         .contentType(file.getContentType())

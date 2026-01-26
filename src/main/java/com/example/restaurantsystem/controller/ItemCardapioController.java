@@ -37,13 +37,10 @@ public class ItemCardapioController {
             @RequestPart("item") ItemCardapio item,
             @RequestPart("foto") MultipartFile foto) throws Exception {
 
-        // 1. Faz o upload para o MinIO usando seu FileService
         String url = fileService.uploadImage(foto);
 
-        // 2. Seta a URL gerada no objeto
         item.setUrlFoto(url);
 
-        // 3. Salva no banco (e limpa o cache do Redis automaticamente)
         return ResponseEntity.ok(itemCardapioService.salvar(item));
     }
 }

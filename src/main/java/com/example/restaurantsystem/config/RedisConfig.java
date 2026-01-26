@@ -20,13 +20,10 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
-        // Configura o serializador das Chaves (para serem Strings legíveis)
         template.setKeySerializer(new StringRedisSerializer());
 
-        // Configura o serializador dos Valores (para transformar Objetos Java em JSON)
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
-        // Configura também para Hashs (caso use)
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 
@@ -35,7 +32,7 @@ public class RedisConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60)) // Define que o cache expira em 60 min
+                .entryTtl(Duration.ofMinutes(60))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
