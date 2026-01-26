@@ -18,9 +18,7 @@ public class Usuario {
 
     private String nome;
     private String email;
-    private String senha;
-    private String telefone;
-    private String endereco;
+    // Removi senha, telefone e endereco pois não existem na tabela do banco
 
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
@@ -28,5 +26,4 @@ public class Usuario {
 
     @Column(columnDefinition = "geography(Point, 4326)")
     private Point localizacao;
-
 }
